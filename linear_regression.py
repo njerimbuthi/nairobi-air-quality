@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 def predict(X, theta):
@@ -12,12 +13,14 @@ def compute_cost(X, y, theta):
 
 
 def gradient_descent(X, y, theta, alpha, iterations):
+    cost_history = []
     for i in range(iterations):
         prediction = predict(X, theta)
         residual = prediction - y
         gradient = np.dot(X.T, residual) / len(y)
         theta = theta - alpha * gradient
-    return theta
+        cost_history.append(compute_cost(X, y, theta))
+    return theta, cost_history
 
 
 X = np.array([[1, 25, 60], [1, 30, 80], [1, 28, 70]])
@@ -30,10 +33,19 @@ print("Before training:")
 print("Theta:", theta)
 print("Cost:", compute_cost(X, y, theta))
 
-theta = gradient_descent(X, y, theta, alpha=0.0001, iterations=1000)
+theta, cost_history = gradient_descent(X, y, theta, alpha=0.0001, iterations=1000)
 
 print("\nAfter training:")
 print("Theta:", theta)
 print("Cost:", compute_cost(X, y, theta))
 print("Predictions:", predict(X, theta))
 print("Actual:", y)
+
+
+fig, ax = plt.subplots()
+ax.plot(cost_history)
+ax.set_xlabel("Iteration")
+ax.set_ylabel("Cost")
+ax.set_title("Learning Curve")
+fig.savefig("learning_curve.png")
+plt.show()
